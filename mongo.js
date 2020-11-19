@@ -427,8 +427,9 @@ function calcWeight(totalPointDiff){
     weight = -.05;
   }
   else if(totalPointDiff < -500){
-    weight = -.1;
+    weight = -.10;
   }
   return weight;
 }
+
 main();
