@@ -4,24 +4,126 @@ async function main(){
   let url = "mongodb://localhost:27017/";
   //for user input
   const readline = require('readline');
-
+  const query = 15;
   let conn = client.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, async function(err,db){
     let dbo = db.db("sports");
-    await winPercantageOneTeam(dbo, "Cleveland Browns", function(){}, true);
-    await winPercantageTwoTeams(dbo, "Houston Texans", "Jacksonville Jaguars", function(){}, true);
-    await underOverOneTeam(dbo, "Miami Dolphins", function(){}, true);
-    await underOverTwoTeams(dbo, "Miami Dolphins", "Buffalo Bills", function(){}, true);
-    await spreadOneTeam(dbo, "Miami Dolphins", function(){}, true);
-    await spreadTwoTeams(dbo, "Green Bay Packers", "Pittsburgh Steelers", function(){}, true);
-    await findUnderOverNoTeams(dbo, 3, function(){}, true);
-    await findUnderOverOneTeam(dbo, 50, "Buffalo Bills", function(){}, true);
-    await findUnderOverTwoTeams(dbo, 50, "Buffalo Bills", "New England Patriots", function(){}, true);
-    await pointDifferentialCompareNoTeams(dbo, 10, function(){}, true);
-    await pointDifferentialCompareOneTeam(dbo, 10, "Buffalo Bills", function(){}, true);
-    await pointDifferentialCompareTwoTeams(dbo, 10, "Buffalo Bills", "New England Patriots", function(){}, true);
-    await pointDifferentialOneTeam(dbo, "Buffalo Bills", function(){}, true, 1990, 1993);
-    await pointDifferentialTwoTeams(dbo, "Buffalo Bills", "New York Jets", function(){}, true);
-    await whoWillWin(dbo, "Buffalo Bills", "Miami Dolphins", function(){}, true);
+
+    switch(query){
+      case 1:
+        await winPercantageOneTeam(dbo, "Cleveland Browns", function(){}, true);
+        await winPercantageOneTeam(dbo, "Cleveland Browns", function(){}, true, 1990);
+        await winPercantageOneTeam(dbo, "Cleveland Browns", function(){}, true, 2017, 2017);    //the cleveland browns did not win a single regular season game in 2017
+        //to show that the algorithm outputs different values for different teams
+        await winPercantageOneTeam(dbo, "Cleveland Browns", function(){}, true, 1980, 1990);
+        await winPercantageOneTeam(dbo, "Buffalo Bills", function(){}, true, 1980, 1990);
+        break;
+      case 2:
+        await winPercantageTwoTeams(dbo, "Cleveland Browns", "Pittsburgh Steelers", function(){}, true);
+        //swapping the position of the two teams results in 2 percentages that add up to 100% (or very close if there are any ties).
+        await winPercantageTwoTeams(dbo, "Cleveland Browns", "Cincinnati Bengals", function(){}, true, 1990, 2000);
+        await winPercantageTwoTeams(dbo, "Cincinnati Bengals", "Cleveland Browns", function(){}, true, 1990, 2000);
+        await winPercantageTwoTeams(dbo, "Houston Texans", "St. Louis Cardinals", function(){}, true); //The Houston Texans have never played against the St. Louis Cardinals
+        break;
+      case 3:
+        await underOverOneTeam(dbo, "Buffalo Bills", function(){}, true);
+        await underOverOneTeam(dbo, "Buffalo Bills", function(){}, true, 1990, 2000);
+        await underOverOneTeam(dbo, "Miami Dolphins", function(){}, true, 1990, 2000);
+        break;
+      case 4:
+        //guaranteed identical outputs for the same two teams, regardless of order
+        await underOverTwoTeams(dbo, "Miami Dolphins", "Buffalo Bills", function(){}, true);
+        await underOverTwoTeams(dbo, "Buffalo Bills", "Miami Dolphins", function(){}, true);
+        await underOverTwoTeams(dbo, "Buffalo Bills", "Miami Dolphins", function(){}, true, 1990, 2000);
+        await underOverTwoTeams(dbo, "Buffalo Bills", "Miami Dolphins", function(){}, true, 2000, 2010);
+        break;
+      case 5:
+        await spreadOneTeam(dbo, "Buffalo Bills", function(){}, true);
+        await spreadOneTeam(dbo, "Buffalo Bills", function(){}, true, 1990, 2010);
+        await spreadOneTeam(dbo, "New York Jets", function(){}, true, 1990, 2010);
+        break;
+      case 6:
+        await spreadTwoTeams(dbo, "Buffalo Bills", "New England Patriots", function(){}, true);
+        await spreadTwoTeams(dbo, "New England Patriots", "Buffalo Bills", function(){}, true);
+        await spreadTwoTeams(dbo, "Buffalo Bills", "New England Patriots", function(){}, true, 2000, 2010);
+        await spreadTwoTeams(dbo, "Buffalo Bills", "New England Patriots", function(){}, true, 1990, 2000);
+        break;
+      case 7:
+        await findUnderOverNoTeams(dbo, 0, function(){}, true);
+        await findUnderOverNoTeams(dbo, 3, function(){}, true);
+        await findUnderOverNoTeams(dbo, 10, function(){}, true);
+        await findUnderOverNoTeams(dbo, 25, function(){}, true);
+        await findUnderOverNoTeams(dbo, 40, function(){}, true);
+        await findUnderOverNoTeams(dbo, 60, function(){}, true);
+        await findUnderOverNoTeams(dbo, 75, function(){}, true);
+        await findUnderOverNoTeams(dbo, 90, function(){}, true);
+        await findUnderOverNoTeams(dbo, 100, function(){}, true);
+        await findUnderOverNoTeams(dbo, 110, function(){}, true);
+
+        await findUnderOverNoTeams(dbo, 40, function(){}, true, 1990, 2010);
+        await findUnderOverNoTeams(dbo, 40, function(){}, true, 1980, 2000);
+        break;
+      case 8:
+        await findUnderOverOneTeam(dbo, 50, "Buffalo Bills", function(){}, true);
+        await findUnderOverOneTeam(dbo, 20, "Buffalo Bills", function(){}, true);
+        await findUnderOverOneTeam(dbo, 70, "Buffalo Bills", function(){}, true);
+        await findUnderOverOneTeam(dbo, 50, "Buffalo Bills", function(){}, true, 1990, 2010);
+        await findUnderOverOneTeam(dbo, 50, "New York Jets", function(){}, true, 1990, 2010);
+        break;
+      case 9:
+        await findUnderOverTwoTeams(dbo, 50, "Buffalo Bills", "New England Patriots", function(){}, true);
+        await findUnderOverTwoTeams(dbo, 20, "Buffalo Bills", "New England Patriots", function(){}, true);
+        await findUnderOverTwoTeams(dbo, 70, "Buffalo Bills", "New England Patriots", function(){}, true);
+        await findUnderOverTwoTeams(dbo, 70, "New England Patriots", "Buffalo Bills", function(){}, true);
+        await findUnderOverTwoTeams(dbo, 50, "Buffalo Bills", "New York Jets", function(){}, true);
+        break;
+      case 10:
+        await pointDifferentialCompareNoTeams(dbo, 0, function(){}, true);
+        await pointDifferentialCompareNoTeams(dbo, 20, function(){}, true);
+        await pointDifferentialCompareNoTeams(dbo, 30, function(){}, true);
+        await pointDifferentialCompareNoTeams(dbo, 40, function(){}, true);
+        await pointDifferentialCompareNoTeams(dbo, 50, function(){}, true);
+        await pointDifferentialCompareNoTeams(dbo, 60, function(){}, true);
+        break;
+      case 11:
+        await pointDifferentialCompareOneTeam(dbo, 10, "Buffalo Bills", function(){}, true);
+        await pointDifferentialCompareOneTeam(dbo, 30, "Buffalo Bills", function(){}, true);
+        await pointDifferentialCompareOneTeam(dbo, 50, "Buffalo Bills", function(){}, true);
+        await pointDifferentialCompareOneTeam(dbo, 10, "Buffalo Bills", function(){}, true, 1980, 1995);
+        await pointDifferentialCompareOneTeam(dbo, 10, "New York Giants", function(){}, true, 1980, 1995);
+        break;
+      case 12:
+        await pointDifferentialCompareTwoTeams(dbo, 10, "Buffalo Bills", "New England Patriots", function(){}, true);
+        await pointDifferentialCompareTwoTeams(dbo, 50, "Buffalo Bills", "New England Patriots", function(){}, true);
+        await pointDifferentialCompareTwoTeams(dbo, 30, "Buffalo Bills", "New England Patriots", function(){}, true);
+        await pointDifferentialCompareTwoTeams(dbo, 30, "New England Patriots", "Buffalo Bills", function(){}, true);
+        await pointDifferentialCompareTwoTeams(dbo, 30, "Buffalo Bills", "New England Patriots", function(){}, true, 1985, 2005);
+        break;
+      case 13:
+        await pointDifferentialOneTeam(dbo, "Buffalo Bills", function(){}, true);
+        //use undefined to still use optional parameters.
+        await pointDifferentialOneTeam(dbo, "Buffalo Bills", function(){}, true, undefined, 2000);
+        await pointDifferentialOneTeam(dbo, "Buffalo Bills", function(){}, true, 2001, 2019);
+        await pointDifferentialOneTeam(dbo, "Buffalo Bills", function(){}, true, 1990, 2010);
+        await pointDifferentialOneTeam(dbo, "San Diego Chargers", function(){}, true, 1990, 2010);
+        break;
+      case 14:
+        await pointDifferentialTwoTeams(dbo, "Buffalo Bills", "New York Jets", function(){}, true);
+        await pointDifferentialTwoTeams(dbo, "New York Jets", "Buffalo Bills", function(){}, true);
+        await pointDifferentialTwoTeams(dbo, "New York Jets", "Buffalo Bills", function(){}, true, 1990, 2000);
+        await pointDifferentialTwoTeams(dbo, "New York Jets", "New England Patriots", function(){}, true, 1900, 2000);
+        break;
+      case 15:
+        await whoWillWin(dbo, "Buffalo Bills", "Miami Dolphins", function(){}, true);
+        await whoWillWin(dbo, "Miami Dolphins", "Buffalo Bills", function(){}, true);
+        await whoWillWin(dbo, "Miami Dolphins", "Buffalo Bills", function(){}, true, 2000, 2005);
+        await whoWillWin(dbo, "Houston Texans", "St. Louis Cardinals", function(){}, true);
+        break;
+      default:
+        break;
+    }
+    /*
+
+    */
     db.close();
   });
 }
@@ -364,12 +466,19 @@ async function whoWillWin(dbo, team1, team2, callback, log, earliest = 1979, lat
   for(let i = 0; i < away.length; i++){
     away[i] = away[i].score_away - away[i].score_home;
   }
+
+  if(away.length === 0 && home.length === 0){
+    console.log("No data available for " + team1 + " vs. " + team2 + ".\n");
+    callback();
+    return;
+  }
+
   const totalPointDiff = home.reduce((acc, e)=> acc+e) + away.reduce((acc, e)=> acc+e);
   const weight = calcWeight(totalPointDiff);
   adjustedWinPct *= (1 + weight);
   adjustedWinPct = superSercretFormula(adjustedWinPct);
   if(log)
-    console.log("The " + team1 + " have approximately a " + adjustedWinPct + "% chance of winning against the " + team2 + "\n");
+    console.log("Based on data from " + earliest + " to " + latest + ",\nthe " + team1 + " have approximately a " + adjustedWinPct + "% chance of winning against the " + team2 + "\n");
   callback();
 }
 
@@ -431,5 +540,6 @@ function calcWeight(totalPointDiff){
   }
   return weight;
 }
+let runs = 0;
 
 main();
